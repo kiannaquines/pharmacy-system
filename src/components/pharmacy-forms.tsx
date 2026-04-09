@@ -52,7 +52,7 @@ export function SupplierCreateCard() {
   const [form, setForm] = useState<SupplierCreateInput>({ name: "", contact_person: "", phone: "", email: "", status: "active" });
 
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-card">
+    <Card className="border border-border bg-card">
       <CardHeader><CardTitle>Create supplier</CardTitle></CardHeader>
       <CardContent className="grid gap-3">
         <NoticeAlert notice={notice} />
@@ -90,7 +90,7 @@ export function ProductCreateCard({ suppliers }: { suppliers: Supplier[] }) {
   });
 
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-card">
+    <Card className="border border-border bg-card">
       <CardHeader><CardTitle>Create product</CardTitle></CardHeader>
       <CardContent className="grid gap-3">
         <NoticeAlert notice={notice} />
@@ -129,7 +129,7 @@ export function BatchCreateCard({ suppliers, products }: { suppliers: Supplier[]
   });
 
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-card">
+    <Card className="border border-border bg-card">
       <CardHeader><CardTitle>Create batch</CardTitle></CardHeader>
       <CardContent className="grid gap-3">
         <NoticeAlert notice={notice} />
@@ -160,7 +160,7 @@ export function SaleCreateCard({ products }: { products: Product[] }) {
   const [form, setForm] = useState({ product_id: products[0]?.id ?? 1, quantity: 1, customer_type: "walk-in" });
 
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-card">
+    <Card className="border border-border bg-card">
       <CardHeader><CardTitle>Record sale</CardTitle></CardHeader>
       <CardContent className="grid gap-3">
         <NoticeAlert notice={notice} />

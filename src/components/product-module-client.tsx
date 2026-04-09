@@ -85,7 +85,7 @@ export function ProductModuleClient({ initialProducts, suppliers }: { initialPro
   return (
     <div className="grid gap-5">
       <NoticeAlert notice={notice} />
-      <Card className="rounded-[28px] border border-border/70 bg-card">
+      <Card className="border border-border bg-card">
         <CardHeader className="flex flex-row items-center justify-between gap-4">
           <div>
             <CardTitle>Products</CardTitle>

@@ -120,18 +120,18 @@ export function ModuleCrudPage<T extends { id: number }>({
     <div className="grid gap-5">
       <NoticeAlert notice={notice} />
 
-      <Card className="rounded-[28px] border border-border/70 bg-card">
+      <Card className="border border-border bg-card">
         <CardHeader className="flex flex-row items-center justify-between gap-4">
           <div>
             <CardTitle>{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger className="group/button inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:opacity-90">
-              <Plus className="h-4 w-4" />
-              Add
+            <DialogTrigger className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+              <Plus className="h-3.5 w-3.5" />
+              Add new
             </DialogTrigger>
-            <DialogContent className="rounded-3xl">
+            <DialogContent className="rounded-2xl">
               <DialogHeader>
                 <DialogTitle>{createTitle}</DialogTitle>
                 <DialogDescription>{createDescription}</DialogDescription>
@@ -168,7 +168,7 @@ export function ModuleCrudPage<T extends { id: number }>({
       </Card>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="rounded-3xl">
+        <DialogContent className="rounded-2xl">
           <DialogHeader>
             <DialogTitle>Edit {title.slice(0, -1)}</DialogTitle>
             <DialogDescription>Update the selected record using a dialog form.</DialogDescription>

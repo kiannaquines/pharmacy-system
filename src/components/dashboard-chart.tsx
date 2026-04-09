@@ -2,16 +2,21 @@
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 const chartConfig = {
   sales: {
     label: "Sales",
-    color: "#1f98be",
+    color: "var(--chart-1)",
   },
   stock: {
     label: "Stock pressure",
-    color: "#ff7f6f",
+    color: "var(--chart-5)",
   },
 } satisfies ChartConfig;
 
@@ -31,10 +36,23 @@ export function DashboardChart() {
     <ChartContainer config={chartConfig} className="h-[320px] w-full">
       <BarChart accessibilityLayer data={chartData} barGap={10}>
         <CartesianGrid vertical={false} strokeDasharray="3 3" />
-        <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={12} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={12}
+        />
         <ChartTooltip content={<ChartTooltipContent />} />
-        <Bar dataKey="sales" fill="var(--color-sales)" radius={[16, 16, 0, 0]} />
-        <Bar dataKey="stock" fill="var(--color-stock)" radius={[16, 16, 0, 0]} />
+        <Bar
+          dataKey="sales"
+          fill="var(--color-sales)"
+          radius={[16, 16, 0, 0]}
+        />
+        <Bar
+          dataKey="stock"
+          fill="var(--color-stock)"
+          radius={[16, 16, 0, 0]}
+        />
       </BarChart>
     </ChartContainer>
   );
