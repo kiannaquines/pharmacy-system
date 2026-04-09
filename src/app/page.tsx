@@ -16,11 +16,20 @@ import {
   Truck,
   Users,
 } from "lucide-react";
+import { DashboardChart } from "@/components/dashboard-chart";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,6 +62,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchBatches, fetchDashboardSummary, fetchProducts, fetchSales, fetchSuppliers } from "@/lib/api";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -92,7 +102,7 @@ export default async function Home() {
             </div>
             <div>
               <p className="text-xl font-semibold tracking-tight">Pharmy</p>
-              <p className="text-sm text-muted-foreground">Shadcn admin</p>
+              <p className="text-sm text-muted-foreground">Shadcn blocks style</p>
             </div>
           </div>
           <div className="relative px-1">
@@ -230,32 +240,25 @@ export default async function Home() {
 
           <section className="mt-6 grid gap-4 xl:grid-cols-[1.5fr_0.8fr]">
             <Card className="rounded-[28px] border-border/60 bg-white shadow-sm">
-              <CardContent className="p-5 md:p-6">
-                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <h2 className="text-2xl font-semibold tracking-tight">Consolidated performance</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Sales, stock exposure, low inventory pressure, and expiry watch in one view.
-                    </p>
-                  </div>
-                  <div className="inline-flex rounded-2xl border border-border/60 bg-[#faf8f4] p-1 text-sm">
-                    {["D", "W", "M", "Y", "All"].map((tab) => (
-                      <span
-                        key={tab}
-                        className={cn(
-                          "px-3 py-1.5",
-                          tab === "All"
-                            ? "rounded-xl bg-white font-semibold text-foreground shadow-sm"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {tab}
-                      </span>
-                    ))}
-                  </div>
+              <CardHeader className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <CardTitle className="text-2xl">Consolidated performance</CardTitle>
+                  <CardDescription>
+                    Sales, stock exposure, low inventory pressure, and expiry watch in one view.
+                  </CardDescription>
                 </div>
-
-                <div className="mt-6 grid gap-4 md:grid-cols-3">
+                <Tabs defaultValue="all" className="w-auto">
+                  <TabsList className="rounded-2xl border border-border/60 bg-[#faf8f4] p-1">
+                    <TabsTrigger value="d">D</TabsTrigger>
+                    <TabsTrigger value="w">W</TabsTrigger>
+                    <TabsTrigger value="m">M</TabsTrigger>
+                    <TabsTrigger value="y">Y</TabsTrigger>
+                    <TabsTrigger value="all">All</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
                   <Card className="rounded-[24px] border-0 bg-[#f4fbfe] shadow-none">
                     <CardContent className="p-4">
                       <p className="text-sm text-muted-foreground">Net sales</p>
@@ -283,33 +286,22 @@ export default async function Home() {
                   </Card>
                 </div>
 
-                <div className="mt-6 rounded-[26px] border border-dashed border-border/70 bg-[linear-gradient(180deg,#fbfdff_0%,#fff7f5_100%)] p-5">
-                  <div className="flex h-[280px] items-end gap-3 overflow-hidden rounded-[22px] bg-[radial-gradient(circle_at_top,#ddeff5_0%,transparent_45%),linear-gradient(180deg,#ffffff_0%,#fcfaf7_100%)] px-3 pb-4 pt-10">
-                    {[52, 58, 55, 67, 62, 72, 68, 74, 70, 77, 79, 84].map((height, index) => (
-                      <div key={index} className="flex flex-1 items-end gap-2">
-                        <div
-                          className="w-1/2 rounded-t-full bg-[#1f98be]/90"
-                          style={{ height: `${height * 2.1}px` }}
-                        />
-                        <div
-                          className="w-1/2 rounded-t-full bg-[#ff7f6f]/90"
-                          style={{ height: `${Math.max(height - 18, 22) * 1.8}px` }}
-                        />
+                <Card className="rounded-[26px] border border-dashed border-border/70 bg-[linear-gradient(180deg,#fbfdff_0%,#fff7f5_100%)] shadow-none">
+                  <CardContent className="p-5">
+                    <DashboardChart />
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-5">
+                        <span className="inline-flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full bg-[#1f98be]" /> Sales
+                        </span>
+                        <span className="inline-flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full bg-[#ff7f6f]" /> Stock pressure
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-5">
-                      <span className="inline-flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-[#1f98be]" /> Sales
-                      </span>
-                      <span className="inline-flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-[#ff7f6f]" /> Stock pressure
-                      </span>
+                      <span>Following shadcn block-style composition with chart, tabs, cards, and actions.</span>
                     </div>
-                    <span>Using official shadcn sidebar, menu, table, avatar, and dropdown primitives.</span>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               </CardContent>
             </Card>
 
@@ -338,154 +330,190 @@ export default async function Home() {
           </section>
 
           <section className="mt-6">
-            <Card className="rounded-[28px] border-border/60 bg-white shadow-sm">
-              <CardContent className="p-5 md:p-6">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <h2 className="text-2xl font-semibold tracking-tight">Operations workspace</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Product control, supplier contacts, batch inventory, and sales activity.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="h-11 rounded-2xl px-4">
-                      <Search className="h-4 w-4" /> Search
-                    </Button>
-                    <Button variant="outline" className="h-11 rounded-2xl px-4">
-                      <SlidersHorizontal className="h-4 w-4" /> Filter
-                    </Button>
-                    <Button className="h-11 rounded-2xl bg-[linear-gradient(180deg,#ff785f,#ef4f43)] px-5 text-white shadow-[0_14px_30px_rgba(239,79,67,0.35)] hover:opacity-95">
-                      <CirclePlus className="h-4 w-4" /> Add new
-                    </Button>
-                  </div>
+            <Tabs defaultValue="products" className="gap-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-2xl font-semibold tracking-tight">Operations workspace</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Product control, supplier contacts, batch inventory, and sales activity.
+                  </p>
                 </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <TabsList className="rounded-2xl border border-border/60 bg-white p-1">
+                    <TabsTrigger value="products">Products</TabsTrigger>
+                    <TabsTrigger value="suppliers">Suppliers</TabsTrigger>
+                    <TabsTrigger value="sales">Sales</TabsTrigger>
+                  </TabsList>
+                  <Button variant="outline" className="h-11 rounded-2xl px-4">
+                    <Search className="h-4 w-4" /> Search
+                  </Button>
+                  <Button variant="outline" className="h-11 rounded-2xl px-4">
+                    <SlidersHorizontal className="h-4 w-4" /> Filter
+                  </Button>
+                  <Dialog>
+                    <DialogTrigger render={<Button className="h-11 rounded-2xl bg-[linear-gradient(180deg,#ff785f,#ef4f43)] px-5 text-white shadow-[0_14px_30px_rgba(239,79,67,0.35)] hover:opacity-95" />}>
+                      <CirclePlus className="h-4 w-4" /> Add new
+                    </DialogTrigger>
+                    <DialogContent className="rounded-3xl">
+                      <DialogHeader>
+                        <DialogTitle>Create a new inventory record</DialogTitle>
+                        <DialogDescription>
+                          This block-style dialog is ready for shadcn form components next.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 pt-2">
+                        <Input placeholder="Product or supplier name" />
+                        <Input placeholder="Category or stock reference" />
+                        <Button className="justify-center">Save draft</Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
 
-                <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-                  <div className="overflow-hidden rounded-[24px] border border-border/60">
+              <TabsContent value="products">
+                <Card className="rounded-[28px] border-border/60 bg-white shadow-sm">
+                  <CardContent className="p-5 md:p-6">
+                    <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+                      <div className="overflow-hidden rounded-[24px] border border-border/60">
+                        <Table>
+                          <TableHeader className="bg-[#fbf8f2]">
+                            <TableRow>
+                              <TableHead className="px-5 py-4 font-medium text-muted-foreground">SKU</TableHead>
+                              <TableHead className="px-5 py-4 font-medium text-muted-foreground">Product</TableHead>
+                              <TableHead className="px-5 py-4 font-medium text-muted-foreground">Category</TableHead>
+                              <TableHead className="px-5 py-4 font-medium text-muted-foreground">Stock</TableHead>
+                              <TableHead className="px-5 py-4 font-medium text-muted-foreground">Price</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {products.map((product: any) => (
+                              <TableRow key={product.id} className="border-border/60 text-[#24221f] hover:bg-[#fcfaf5]">
+                                <TableCell className="px-5 py-4 font-medium text-muted-foreground">{product.sku}</TableCell>
+                                <TableCell className="px-5 py-4">
+                                  <div>
+                                    <p className="font-semibold">{product.brandName}</p>
+                                    <p className="text-muted-foreground">{product.genericName}</p>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="px-5 py-4">{product.category}</TableCell>
+                                <TableCell className="px-5 py-4">
+                                  <Badge
+                                    className={cn(
+                                      "rounded-full px-3 py-1 text-xs font-semibold hover:opacity-100",
+                                      product.stockAvailable <= product.reorderLevel
+                                        ? "bg-[#fff0ec] text-[#e25f4a]"
+                                        : "bg-[#eef9f9] text-[#1380a8]",
+                                    )}
+                                  >
+                                    {product.stockAvailable} units
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="px-5 py-4 font-semibold">{formatCurrency(product.sellingPrice)}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      <div className="space-y-4">
+                        <Card className="rounded-[24px] border-border/60 bg-[#fcfaf6] shadow-none">
+                          <CardHeader>
+                            <CardTitle className="text-lg">Supplier registry</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {suppliers.map((supplier: any) => (
+                              <Card key={supplier.id} className="rounded-2xl border-border/60 bg-white shadow-sm">
+                                <CardContent className="p-4">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <p className="font-semibold">{supplier.name}</p>
+                                      <p className="mt-1 text-sm text-muted-foreground">{supplier.contactPerson}</p>
+                                    </div>
+                                    <Badge className="rounded-full bg-[#eef9f9] px-3 py-1 text-xs font-semibold text-[#1380a8] capitalize hover:bg-[#eef9f9]">
+                                      {supplier.status}
+                                    </Badge>
+                                  </div>
+                                  <p className="mt-3 text-sm text-muted-foreground">{supplier.email}</p>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </CardContent>
+                        </Card>
+
+                        <Card className="rounded-[24px] border-border/60 bg-[#fff8f5] shadow-none">
+                          <CardHeader>
+                            <CardTitle className="text-lg">Batch watchlist</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {batches.map((batch: any) => (
+                              <Card key={batch.batchNumber} className="rounded-2xl border-[#f3dfd8] bg-white/80 shadow-none">
+                                <CardContent className="p-4">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <p className="font-semibold">{batch.product}</p>
+                                      <p className="text-sm text-muted-foreground">{batch.batchNumber}</p>
+                                    </div>
+                                    <Badge className="rounded-full bg-[#fff0ec] px-3 py-1 text-xs font-semibold text-[#e25f4a] hover:bg-[#fff0ec]">
+                                      {batch.expiryDate}
+                                    </Badge>
+                                  </div>
+                                  <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
+                                    <span>Available: {batch.quantityAvailable}</span>
+                                    <span>{formatCurrency(batch.purchaseCost)}</span>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="suppliers">
+                <Card className="rounded-[28px] border-border/60 bg-white shadow-sm">
+                  <CardContent className="p-6">
+                    <p className="text-sm text-muted-foreground">Supplier tab block ready for deeper CRUD forms.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="sales">
+                <Card className="rounded-[28px] border-border/60 bg-white shadow-sm">
+                  <CardContent className="p-0">
                     <Table>
                       <TableHeader className="bg-[#fbf8f2]">
                         <TableRow>
-                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">SKU</TableHead>
-                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Product</TableHead>
-                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Category</TableHead>
-                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Stock</TableHead>
-                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Price</TableHead>
+                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Sale no.</TableHead>
+                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Date</TableHead>
+                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Customer type</TableHead>
+                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Discount</TableHead>
+                          <TableHead className="px-5 py-4 font-medium text-muted-foreground">Net amount</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {products.map((product: any) => (
-                          <TableRow key={product.id} className="border-border/60 text-[#24221f] hover:bg-[#fcfaf5]">
-                            <TableCell className="px-5 py-4 font-medium text-muted-foreground">{product.sku}</TableCell>
+                        {sales.map((sale: any) => (
+                          <TableRow key={sale.saleNumber} className="border-border/60 text-[#24221f] hover:bg-[#fcfaf5]">
+                            <TableCell className="px-5 py-4 font-semibold">{sale.saleNumber}</TableCell>
+                            <TableCell className="px-5 py-4 text-muted-foreground">{sale.saleDate}</TableCell>
                             <TableCell className="px-5 py-4">
-                              <div>
-                                <p className="font-semibold">{product.brandName}</p>
-                                <p className="text-muted-foreground">{product.genericName}</p>
-                              </div>
-                            </TableCell>
-                            <TableCell className="px-5 py-4">{product.category}</TableCell>
-                            <TableCell className="px-5 py-4">
-                              <Badge
-                                className={cn(
-                                  "rounded-full px-3 py-1 text-xs font-semibold hover:opacity-100",
-                                  product.stockAvailable <= product.reorderLevel
-                                    ? "bg-[#fff0ec] text-[#e25f4a]"
-                                    : "bg-[#eef9f9] text-[#1380a8]",
-                                )}
-                              >
-                                {product.stockAvailable} units
+                              <Badge className="rounded-full bg-[#f4f7fb] px-3 py-1 text-xs font-semibold capitalize text-[#516174] hover:bg-[#f4f7fb]">
+                                {sale.customerType}
                               </Badge>
                             </TableCell>
-                            <TableCell className="px-5 py-4 font-semibold">{formatCurrency(product.sellingPrice)}</TableCell>
+                            <TableCell className="px-5 py-4 text-[#e25f4a]">{formatCurrency(sale.discountAmount)}</TableCell>
+                            <TableCell className="px-5 py-4 font-semibold">{formatCurrency(sale.netAmount)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Card className="rounded-[24px] border-border/60 bg-[#fcfaf6] shadow-none">
-                      <CardContent className="p-5">
-                        <h3 className="text-lg font-semibold">Supplier registry</h3>
-                        <div className="mt-4 space-y-3">
-                          {suppliers.map((supplier: any) => (
-                            <Card key={supplier.id} className="rounded-2xl border-border/60 bg-white shadow-sm">
-                              <CardContent className="p-4">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <p className="font-semibold">{supplier.name}</p>
-                                    <p className="mt-1 text-sm text-muted-foreground">{supplier.contactPerson}</p>
-                                  </div>
-                                  <Badge className="rounded-full bg-[#eef9f9] px-3 py-1 text-xs font-semibold text-[#1380a8] capitalize hover:bg-[#eef9f9]">
-                                    {supplier.status}
-                                  </Badge>
-                                </div>
-                                <p className="mt-3 text-sm text-muted-foreground">{supplier.email}</p>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="rounded-[24px] border-border/60 bg-[#fff8f5] shadow-none">
-                      <CardContent className="p-5">
-                        <h3 className="text-lg font-semibold">Batch watchlist</h3>
-                        <div className="mt-4 space-y-3">
-                          {batches.map((batch: any) => (
-                            <Card key={batch.batchNumber} className="rounded-2xl border-[#f3dfd8] bg-white/80 shadow-none">
-                              <CardContent className="p-4">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <p className="font-semibold">{batch.product}</p>
-                                    <p className="text-sm text-muted-foreground">{batch.batchNumber}</p>
-                                  </div>
-                                  <Badge className="rounded-full bg-[#fff0ec] px-3 py-1 text-xs font-semibold text-[#e25f4a] hover:bg-[#fff0ec]">
-                                    {batch.expiryDate}
-                                  </Badge>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
-                                  <span>Available: {batch.quantityAvailable}</span>
-                                  <span>{formatCurrency(batch.purchaseCost)}</span>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-
-                <div className="mt-6 overflow-hidden rounded-[24px] border border-border/60">
-                  <Table>
-                    <TableHeader className="bg-[#fbf8f2]">
-                      <TableRow>
-                        <TableHead className="px-5 py-4 font-medium text-muted-foreground">Sale no.</TableHead>
-                        <TableHead className="px-5 py-4 font-medium text-muted-foreground">Date</TableHead>
-                        <TableHead className="px-5 py-4 font-medium text-muted-foreground">Customer type</TableHead>
-                        <TableHead className="px-5 py-4 font-medium text-muted-foreground">Discount</TableHead>
-                        <TableHead className="px-5 py-4 font-medium text-muted-foreground">Net amount</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {sales.map((sale: any) => (
-                        <TableRow key={sale.saleNumber} className="border-border/60 text-[#24221f] hover:bg-[#fcfaf5]">
-                          <TableCell className="px-5 py-4 font-semibold">{sale.saleNumber}</TableCell>
-                          <TableCell className="px-5 py-4 text-muted-foreground">{sale.saleDate}</TableCell>
-                          <TableCell className="px-5 py-4">
-                            <Badge className="rounded-full bg-[#f4f7fb] px-3 py-1 text-xs font-semibold capitalize text-[#516174] hover:bg-[#f4f7fb]">
-                              {sale.customerType}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="px-5 py-4 text-[#e25f4a]">{formatCurrency(sale.discountAmount)}</TableCell>
-                          <TableCell className="px-5 py-4 font-semibold">{formatCurrency(sale.netAmount)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </section>
         </div>
       </SidebarInset>
