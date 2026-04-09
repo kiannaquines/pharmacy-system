@@ -146,8 +146,8 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f8f8f6_45%,#f3f3f1_100%)] text-foreground">
-      <div className="grid min-h-screen grid-cols-1 overflow-hidden border border-border/70 bg-background shadow-[0_20px_80px_rgba(0,0,0,0.05)] lg:grid-cols-[320px_1fr]">
-        <aside className="sticky top-0 self-start h-screen overflow-y-auto border-b border-border/70 bg-[#fbfbfa] px-5 py-6 lg:border-r lg:border-b-0">
+      <div className="grid h-screen grid-cols-1 overflow-hidden border border-border/70 bg-background shadow-[0_20px_80px_rgba(0,0,0,0.05)] lg:grid-cols-[320px_1fr]">
+        <aside className="h-full overflow-y-auto border-b border-border/70 bg-[#fbfbfa] px-5 py-6 lg:border-r lg:border-b-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 bg-background">
@@ -212,7 +212,7 @@ export default async function Home() {
           </div>
         </aside>
 
-        <section className="bg-[#fcfcfb]">
+        <section className="h-full overflow-y-auto bg-[#fcfcfb]">
           <header className="flex items-center justify-between gap-4 border-b border-border/70 px-6 py-5 md:px-8">
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon-sm" className="rounded-xl lg:hidden">
