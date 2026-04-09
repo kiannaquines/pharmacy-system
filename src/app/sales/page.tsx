@@ -1,6 +1,8 @@
 import { SalesModuleClient } from "@/components/sales-module-client";
 import { PharmacyShell } from "@/components/pharmacy-shell";
-import { fetchProducts, fetchSales } from "@/lib/api";
+import { fetchProducts, fetchSales } from "@/lib/server-api";
+
+export const dynamic = "force-dynamic";
 
 export default async function SalesPage() {
   const [sales, products] = await Promise.all([fetchSales(), fetchProducts()]);

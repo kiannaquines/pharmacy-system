@@ -41,6 +41,7 @@ import {
   type SaleCreateInput,
   type SupplierCreateInput,
 } from "@/lib/api";
+import { SalesChart } from "@/components/sales-chart";
 import { formatCurrency } from "@/lib/format";
 import type { Batch, Product, Sale, Supplier } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -71,10 +72,6 @@ const primaryNav = [
   { label: "Users", icon: Users },
 ];
 
-const chartPoints = [
-  22, 18, 30, 26, 34, 28, 38, 35, 45, 33, 52, 41, 48, 37, 54, 46, 58, 42, 61,
-  49, 57, 44, 63, 50, 60, 47, 65, 55, 62, 51,
-];
 const categoryOptions = [
   { id: 1, label: "OTC Medicines" },
   { id: 2, label: "Prescription Medicines" },
@@ -94,7 +91,7 @@ function MiniStatCard({
   trend: string;
 }) {
   return (
-    <Card className="border border-border bg-card">
+    <Card className="border-0 shadow-none bg-card">
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4">
           <p className="text-sm text-muted-foreground">{title}</p>
@@ -109,96 +106,6 @@ function MiniStatCard({
         </p>
       </CardContent>
     </Card>
-  );
-}
-
-function AreaLikeChart() {
-  const max = Math.max(...chartPoints);
-  const path = chartPoints
-    .map((point, index) => {
-      const x = (index / (chartPoints.length - 1)) * 100;
-      const y = 100 - (point / max) * 75;
-      return `${index === 0 ? "M" : "L"}${x},${y}`;
-    })
-    .join(" ");
-
-  const softPath = chartPoints
-    .map((point, index) => {
-      const x = (index / (chartPoints.length - 1)) * 100;
-      const y = 100 - (point / max) * 55;
-      return `${index === 0 ? "M" : "L"}${x},${y}`;
-    })
-    .join(" ");
-
-  return (
-    <div className="relative mt-8 h-[420px] overflow-hidden rounded-lg border border-border bg-card p-6">
-      <div className="absolute inset-x-6 top-6 flex justify-end">
-        <div className="inline-flex rounded-lg border border-border bg-background p-1 text-sm">
-          {["Last 3 months", "Last 30 days", "Last 7 days"].map(
-            (tab, index) => (
-              <button
-                key={tab}
-                className={cn(
-                  "rounded-xl px-5 py-3 font-medium text-muted-foreground transition",
-                  index === 0 && "bg-muted text-foreground",
-                )}
-              >
-                {tab}
-              </button>
-            ),
-          )}
-        </div>
-      </div>
-
-      <div className="absolute inset-x-10 bottom-16 top-24">
-        <div className="absolute inset-0">
-          {[0, 1, 2, 3].map((line) => (
-            <div
-              key={line}
-              className="absolute left-0 right-0 border-t border-border"
-              style={{ top: `${line * 25}%` }}
-            />
-          ))}
-        </div>
-
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          className="absolute inset-0 h-full w-full"
-        >
-          <path
-            d={`${softPath} L100,100 L0,100 Z`}
-            fill="oklch(from var(--primary) l c h / 0.15)"
-          />
-          <path
-            d={`${path} L100,100 L0,100 Z`}
-            fill="oklch(from var(--primary) l c h / 0.30)"
-          />
-        </svg>
-      </div>
-
-      <div className="absolute inset-x-10 bottom-8 flex items-center justify-between text-sm text-muted-foreground">
-        {[
-          "Apr 3",
-          "Apr 9",
-          "Apr 15",
-          "Apr 21",
-          "Apr 27",
-          "May 3",
-          "May 9",
-          "May 15",
-          "May 21",
-          "May 28",
-          "Jun 3",
-          "Jun 9",
-          "Jun 15",
-          "Jun 21",
-          "Jun 29",
-        ].map((label) => (
-          <span key={label}>{label}</span>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -257,6 +164,7 @@ export function PharmacyDashboardClient({
   const [message, setMessage] = useState<string | null>(null);
 
   const [supplierForm, setSupplierForm] = useState<SupplierCreateInput>({
+    supplier_code: "",
     name: "",
     contact_person: "",
     phone: "",
@@ -289,7 +197,7 @@ export function PharmacyDashboardClient({
   });
 
   const totalRevenue = useMemo(
-    () => sales.reduce((sum, sale) => sum + sale.netAmount, 0),
+    () => sales.reduce((sum, sale) => sum + sale.net_amount, 0),
     [sales],
   );
 
@@ -307,6 +215,7 @@ export function PharmacyDashboardClient({
           },
         }));
         setSupplierForm({
+          supplier_code: "",
           name: "",
           contact_person: "",
           phone: "",
@@ -338,7 +247,7 @@ export function PharmacyDashboardClient({
           selling_price: 0,
           reorder_level: 0,
         }));
-        setMessage(`Product ${created.brandName} created.`);
+        setMessage(`Product ${created.brand_name} created.`);
       } catch {
         setMessage("Failed to create product.");
       }
@@ -356,13 +265,13 @@ export function PharmacyDashboardClient({
             product.id === batchForm.product_id
               ? {
                   ...product,
-                  stockAvailable:
-                    product.stockAvailable + batchForm.quantity_received,
+                  stock_available:
+                    product.stock_available + batchForm.quantity_received,
                 }
               : product,
           ),
         );
-        setMessage(`Batch ${created.batchNumber} recorded.`);
+        setMessage(`Batch ${created.batch_number} recorded.`);
       } catch {
         setMessage("Failed to create batch.");
       }
@@ -386,15 +295,15 @@ export function PharmacyDashboardClient({
             product.id === saleForm.product_id
               ? {
                   ...product,
-                  stockAvailable: Math.max(
+                  stock_available: Math.max(
                     0,
-                    product.stockAvailable - saleForm.quantity,
+                    product.stock_available - saleForm.quantity,
                   ),
                 }
               : product,
           ),
         );
-        setMessage(`Sale ${created.saleNumber} posted.`);
+        setMessage(`Sale ${created.sale_number} posted.`);
       } catch {
         setMessage("Failed to create sale. Check available stock.");
       }
@@ -472,7 +381,7 @@ export function PharmacyDashboardClient({
                       <Field label="Email">
                         <TextInput
                           type="email"
-                          value={supplierForm.email}
+                          value={supplierForm.email ?? ""}
                           onChange={(e) =>
                             setSupplierForm({
                               ...supplierForm,
@@ -610,7 +519,7 @@ export function PharmacyDashboardClient({
                         >
                           {products.map((product) => (
                             <option key={product.id} value={product.id}>
-                              {product.brandName}
+                              {product.brand_name}
                             </option>
                           ))}
                         </SelectInput>
@@ -705,7 +614,7 @@ export function PharmacyDashboardClient({
                         >
                           {products.map((product) => (
                             <option key={product.id} value={product.id}>
-                              {product.brandName}
+                              {product.brand_name}
                             </option>
                           ))}
                         </SelectInput>
@@ -823,21 +732,41 @@ export function PharmacyDashboardClient({
             </section>
 
             <section>
-              <Card className="border border-border bg-background">
+              <Card className="border-0 shadow-none bg-background">
                 <CardHeader className="pb-0">
                   <CardTitle>Sales and Stock Activity</CardTitle>
                   <CardDescription>
-                    Backend-connected operational trend panel
+                    Daily net revenue from live sales data
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <AreaLikeChart />
+                  <SalesChart
+                    labels={(() => {
+                      const byDate: Record<string, number> = {};
+                      sales.forEach((s: any) => {
+                        const d = s.sale_date?.slice(0, 10) ?? "Unknown";
+                        byDate[d] = (byDate[d] ?? 0) + (s.net_amount ?? 0);
+                      });
+                      return Object.keys(byDate).sort().slice(-30);
+                    })()}
+                    values={(() => {
+                      const byDate: Record<string, number> = {};
+                      sales.forEach((s: any) => {
+                        const d = s.sale_date?.slice(0, 10) ?? "Unknown";
+                        byDate[d] = (byDate[d] ?? 0) + (s.net_amount ?? 0);
+                      });
+                      return Object.keys(byDate)
+                        .sort()
+                        .slice(-30)
+                        .map((d) => byDate[d]);
+                    })()}
+                  />
                 </CardContent>
               </Card>
             </section>
 
             <section className="grid gap-5 xl:grid-cols-2">
-              <Card className="border border-border bg-card">
+              <Card className="border-0 shadow-none bg-card">
                 <CardHeader>
                   <CardTitle>Products</CardTitle>
                   <CardDescription>
@@ -852,17 +781,17 @@ export function PharmacyDashboardClient({
                       className="grid grid-cols-[1.2fr_1fr_auto] items-center gap-4 rounded-lg border border-border bg-muted/30 px-4 py-3"
                     >
                       <div>
-                        <p className="font-semibold">{product.brandName}</p>
+                        <p className="font-semibold">{product.brand_name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {product.genericName} • {product.sku}
+                          {product.generic_name} • {product.sku}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">
-                          {product.category}
+                          {product.category_name}
                         </p>
                         <p className="text-sm">
-                          {formatCurrency(product.sellingPrice)}
+                          {formatCurrency(product.selling_price)}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -870,7 +799,7 @@ export function PharmacyDashboardClient({
                           variant="outline"
                           className="rounded-full px-3 py-1 text-sm"
                         >
-                          {product.stockAvailable} stock
+                          {product.stock_available} stock
                         </Badge>
                         <Button variant="outline" size="sm" disabled>
                           Edit
@@ -884,7 +813,7 @@ export function PharmacyDashboardClient({
                 </CardContent>
               </Card>
 
-              <Card className="border border-border bg-card">
+              <Card className="border-0 shadow-none bg-card">
                 <CardHeader>
                   <CardTitle>Suppliers</CardTitle>
                   <CardDescription>
@@ -900,7 +829,7 @@ export function PharmacyDashboardClient({
                       <div>
                         <p className="font-semibold">{supplier.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {supplier.contactPerson} • {supplier.phone}
+                          {supplier.contact_person} • {supplier.phone}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -922,7 +851,7 @@ export function PharmacyDashboardClient({
                 </CardContent>
               </Card>
 
-              <Card className="border border-border bg-card">
+              <Card className="border-0 shadow-none bg-card">
                 <CardHeader>
                   <CardTitle>Stock batches</CardTitle>
                   <CardDescription>
@@ -932,27 +861,27 @@ export function PharmacyDashboardClient({
                 <CardContent className="space-y-3">
                   {batches.map((batch) => (
                     <div
-                      key={batch.batchNumber}
+                      key={batch.batch_number}
                       className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-4"
                     >
                       <div>
-                        <p className="font-semibold">{batch.product}</p>
+                        <p className="font-semibold">{batch.product_name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {batch.batchNumber} • Expires {batch.expiryDate}
+                          {batch.batch_number} • Expires {batch.expiry_date}
                         </p>
                       </div>
                       <Badge
                         variant="secondary"
                         className="rounded-full px-3 py-1 text-sm"
                       >
-                        {batch.quantityAvailable} available
+                        {batch.quantity_available} available
                       </Badge>
                     </div>
                   ))}
                 </CardContent>
               </Card>
 
-              <Card className="border border-border bg-card">
+              <Card className="border-0 shadow-none bg-card">
                 <CardHeader>
                   <CardTitle>Sales ledger</CardTitle>
                   <CardDescription>
@@ -962,20 +891,20 @@ export function PharmacyDashboardClient({
                 <CardContent className="space-y-3">
                   {sales.map((sale) => (
                     <div
-                      key={sale.saleNumber}
+                      key={sale.sale_number}
                       className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-4"
                     >
                       <div>
-                        <p className="font-semibold">{sale.saleNumber}</p>
+                        <p className="font-semibold">{sale.sale_number}</p>
                         <p className="text-sm text-muted-foreground">
-                          {sale.customerType} • {sale.saleDate}
+                          {sale.customer_type} • {sale.sale_date}
                         </p>
                       </div>
                       <Badge
                         variant="outline"
                         className="rounded-full px-3 py-1 text-sm"
                       >
-                        {formatCurrency(sale.netAmount)}
+                        {formatCurrency(sale.net_amount)}
                       </Badge>
                     </div>
                   ))}

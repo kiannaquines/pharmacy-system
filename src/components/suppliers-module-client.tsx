@@ -22,7 +22,7 @@ export function SuppliersModuleClient({
         <div key="name">
           <p className="font-semibold">{supplier.name}</p>
           <p className="text-sm text-muted-foreground">
-            {supplier.contactPerson}
+            {supplier.contact_person}
           </p>
         </div>,
         <span key="phone">{supplier.phone}</span>,
@@ -30,6 +30,7 @@ export function SuppliersModuleClient({
         <span key="status">{supplier.status}</span>,
       ]}
       initialForm={{
+        supplier_code: "",
         name: "",
         contact_person: "",
         phone: "",
@@ -37,6 +38,7 @@ export function SuppliersModuleClient({
         status: "active",
       }}
       fields={[
+        { name: "supplier_code", label: "Supplier code" },
         { name: "name", label: "Supplier name" },
         { name: "contact_person", label: "Contact person" },
         { name: "phone", label: "Phone" },
@@ -52,14 +54,16 @@ export function SuppliersModuleClient({
         },
       ]}
       toForm={(supplier: any) => ({
+        supplier_code: supplier.supplier_code,
         name: supplier.name,
-        contact_person: supplier.contactPerson,
+        contact_person: supplier.contact_person,
         phone: supplier.phone,
         email: supplier.email,
         status: supplier.status,
       })}
       onCreate={(payload) =>
         createSupplier({
+          supplier_code: String(payload.supplier_code),
           name: String(payload.name),
           contact_person: String(payload.contact_person),
           phone: String(payload.phone),
@@ -69,6 +73,7 @@ export function SuppliersModuleClient({
       }
       onUpdate={(id, payload) =>
         updateSupplier(id, {
+          supplier_code: String(payload.supplier_code),
           name: String(payload.name),
           contact_person: String(payload.contact_person),
           phone: String(payload.phone),

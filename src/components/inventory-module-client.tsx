@@ -27,12 +27,12 @@ export function InventoryModuleClient({
       headers={["Product", "Supplier", "Cost", "Available", "Actions"]}
       renderRow={(batch: any) => [
         <div key="product">
-          <p className="font-semibold">{batch.product}</p>
-          <p className="text-sm text-muted-foreground">{batch.batchNumber}</p>
+          <p className="font-semibold">{batch.product_name}</p>
+          <p className="text-sm text-muted-foreground">{batch.batch_number}</p>
         </div>,
         <span key="supplier">{batch.supplier}</span>,
-        <span key="cost">{formatCurrency(batch.purchaseCost)}</span>,
-        <span key="available">{batch.quantityAvailable}</span>,
+        <span key="cost">{formatCurrency(batch.purchase_cost)}</span>,
+        <span key="available">{batch.quantity_available}</span>,
       ]}
       initialForm={{
         product_id: products[0]?.id ?? 1,
@@ -48,7 +48,7 @@ export function InventoryModuleClient({
           name: "product_id",
           label: "Product",
           kind: "select",
-          options: products.map((p) => ({ label: p.brandName, value: p.id })),
+          options: products.map((p) => ({ label: p.brand_name, value: p.id })),
         },
         {
           name: "supplier_id",
@@ -76,11 +76,11 @@ export function InventoryModuleClient({
           suppliers.find((s) => s.name === batch.supplier)?.id ??
           suppliers[0]?.id ??
           1,
-        batch_number: batch.batchNumber,
-        expiry_date: batch.expiryDate,
-        quantity_received: batch.quantityReceived,
-        quantity_available: batch.quantityAvailable,
-        purchase_cost: batch.purchaseCost,
+        batch_number: batch.batch_number,
+        expiry_date: batch.expiry_date,
+        quantity_received: batch.quantity_received,
+        quantity_available: batch.quantity_available,
+        purchase_cost: batch.purchase_cost,
       })}
       onCreate={(payload) =>
         createBatch({

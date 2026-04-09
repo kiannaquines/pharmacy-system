@@ -6,8 +6,22 @@ import { AlertCircle, CheckCircle2, Pencil, Plus } from "lucide-react";
 import { PharmacyDataTable } from "@/components/pharmacy-data-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { createProduct, updateProduct } from "@/lib/api";
 import { formatCurrency } from "@/lib/format";
@@ -38,14 +52,26 @@ function NoticeAlert({ notice }: { notice: Notice }) {
   if (!notice) return null;
   return (
     <Alert variant={notice.type === "error" ? "destructive" : "default"}>
-      {notice.type === "error" ? <AlertCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
-      <AlertTitle>{notice.type === "error" ? "Action failed" : "Action completed"}</AlertTitle>
+      {notice.type === "error" ? (
+        <AlertCircle className="h-4 w-4" />
+      ) : (
+        <CheckCircle2 className="h-4 w-4" />
+      )}
+      <AlertTitle>
+        {notice.type === "error" ? "Action failed" : "Action completed"}
+      </AlertTitle>
       <AlertDescription>{notice.text}</AlertDescription>
     </Alert>
   );
 }
 
-export function ProductModuleClient({ initialProducts, suppliers }: { initialProducts: Product[]; suppliers: Supplier[] }) {
+export function ProductModuleClient({
+  initialProducts,
+  suppliers,
+}: {
+  initialProducts: Product[];
+  suppliers: Supplier[];
+}) {
   const [rows, setRows] = useState(initialProducts);
   const [notice, setNotice] = useState<Notice>(null);
   const [createOpen, setCreateOpen] = useState(false);
@@ -69,15 +95,17 @@ export function ProductModuleClient({ initialProducts, suppliers }: { initialPro
   function setEditFromRow(row: Product) {
     setEditing(row);
     setEditForm({
-      category_id: categoryOptions.find((option) => option.label === row.category)?.value ?? 1,
+      category_id:
+        categoryOptions.find((option) => option.label === row.category_name)
+          ?.value ?? 1,
       supplier_id: suppliers[0]?.id ?? 1,
       sku: row.sku,
-      generic_name: row.genericName,
-      brand_name: row.brandName,
+      generic_name: row.generic_name,
+      brand_name: row.brand_name,
       classification: row.classification,
       unit: row.unit,
-      selling_price: row.sellingPrice,
-      reorder_level: row.reorderLevel,
+      selling_price: row.selling_price,
+      reorder_level: row.reorder_level,
     });
     setEditOpen(true);
   }
@@ -85,11 +113,13 @@ export function ProductModuleClient({ initialProducts, suppliers }: { initialPro
   return (
     <div className="grid gap-5">
       <NoticeAlert notice={notice} />
-      <Card className="border border-border bg-card">
+      <Card className="border-0 shadow-none bg-card">
         <CardHeader className="flex flex-row items-center justify-between gap-4">
           <div>
             <CardTitle>Products</CardTitle>
-            <CardDescription>Create and edit products using dialog forms.</CardDescription>
+            <CardDescription>
+              Create and edit products using dialog forms.
+            </CardDescription>
           </div>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground">
@@ -98,25 +128,61 @@ export function ProductModuleClient({ initialProducts, suppliers }: { initialPro
             <DialogContent className="rounded-3xl">
               <DialogHeader>
                 <DialogTitle>Add product</DialogTitle>
-                <DialogDescription>Use the dialog to add a new product to the catalog.</DialogDescription>
+                <DialogDescription>
+                  Use the dialog to add a new product to the catalog.
+                </DialogDescription>
               </DialogHeader>
               <div className="grid gap-3">
-                <Input placeholder="Brand name" value={createForm.brand_name} onChange={(e) => setCreateForm({ ...createForm, brand_name: e.target.value })} />
-                <Input placeholder="Generic name" value={createForm.generic_name} onChange={(e) => setCreateForm({ ...createForm, generic_name: e.target.value })} />
-                <Input placeholder="SKU" value={createForm.sku} onChange={(e) => setCreateForm({ ...createForm, sku: e.target.value })} />
+                <Input
+                  placeholder="Brand name"
+                  value={createForm.brand_name}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, brand_name: e.target.value })
+                  }
+                />
+                <Input
+                  placeholder="Generic name"
+                  value={createForm.generic_name}
+                  onChange={(e) =>
+                    setCreateForm({
+                      ...createForm,
+                      generic_name: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  placeholder="SKU"
+                  value={createForm.sku}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, sku: e.target.value })
+                  }
+                />
               </div>
               <DialogFooter>
-                <Button disabled={pending} onClick={() => startTransition(async () => {
-                  try {
-                    const created = await createProduct(createForm);
-                    setRows((current) => [created, ...current]);
-                    setCreateForm(emptyForm);
-                    setCreateOpen(false);
-                    setNotice({ type: "success", text: "Product added successfully." });
-                  } catch {
-                    setNotice({ type: "error", text: "Failed to add product." });
+                <Button
+                  disabled={pending}
+                  onClick={() =>
+                    startTransition(async () => {
+                      try {
+                        const created = await createProduct(createForm);
+                        setRows((current) => [created, ...current]);
+                        setCreateForm(emptyForm);
+                        setCreateOpen(false);
+                        setNotice({
+                          type: "success",
+                          text: "Product added successfully.",
+                        });
+                      } catch {
+                        setNotice({
+                          type: "error",
+                          text: "Failed to add product.",
+                        });
+                      }
+                    })
                   }
-                })}>Save</Button>
+                >
+                  Save
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -127,11 +193,25 @@ export function ProductModuleClient({ initialProducts, suppliers }: { initialPro
             data={rows}
             emptyMessage="No products found."
             renderRow={(product) => [
-              <div key="product"><p className="font-semibold">{product.brandName}</p><p className="text-sm text-muted-foreground">{product.genericName} • {product.sku}</p></div>,
-              <span key="category">{product.category}</span>,
-              <span key="price">{formatCurrency(product.sellingPrice)}</span>,
-              <span key="stock">{product.stockAvailable}</span>,
-              <div key="actions" className="flex justify-end"><Button variant="outline" size="sm" onClick={() => setEditFromRow(product)}><Pencil className="h-4 w-4" />Edit</Button></div>,
+              <div key="product">
+                <p className="font-semibold">{product.brand_name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {product.generic_name} • {product.sku}
+                </p>
+              </div>,
+              <span key="category">{product.category_name}</span>,
+              <span key="price">{formatCurrency(product.selling_price)}</span>,
+              <span key="stock">{product.stock_available}</span>,
+              <div key="actions" className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditFromRow(product)}
+                >
+                  <Pencil className="h-4 w-4" />
+                  Edit
+                </Button>
+              </div>,
             ]}
           />
         </CardContent>
@@ -144,22 +224,57 @@ export function ProductModuleClient({ initialProducts, suppliers }: { initialPro
             <DialogDescription>Update the selected product.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-3">
-            <Input placeholder="Brand name" value={editForm.brand_name} onChange={(e) => setEditForm({ ...editForm, brand_name: e.target.value })} />
-            <Input placeholder="Generic name" value={editForm.generic_name} onChange={(e) => setEditForm({ ...editForm, generic_name: e.target.value })} />
-            <Input placeholder="SKU" value={editForm.sku} onChange={(e) => setEditForm({ ...editForm, sku: e.target.value })} />
+            <Input
+              placeholder="Brand name"
+              value={editForm.brand_name}
+              onChange={(e) =>
+                setEditForm({ ...editForm, brand_name: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Generic name"
+              value={editForm.generic_name}
+              onChange={(e) =>
+                setEditForm({ ...editForm, generic_name: e.target.value })
+              }
+            />
+            <Input
+              placeholder="SKU"
+              value={editForm.sku}
+              onChange={(e) =>
+                setEditForm({ ...editForm, sku: e.target.value })
+              }
+            />
           </div>
           <DialogFooter>
-            <Button disabled={pending || !editing} onClick={() => startTransition(async () => {
-              if (!editing) return;
-              try {
-                const updated = await updateProduct(editing.id, editForm);
-                setRows((current) => current.map((row) => row.id === updated.id ? updated : row));
-                setEditOpen(false);
-                setNotice({ type: "success", text: "Product updated successfully." });
-              } catch {
-                setNotice({ type: "error", text: "Failed to update product." });
+            <Button
+              disabled={pending || !editing}
+              onClick={() =>
+                startTransition(async () => {
+                  if (!editing) return;
+                  try {
+                    const updated = await updateProduct(editing.id, editForm);
+                    setRows((current) =>
+                      current.map((row) =>
+                        row.id === updated.id ? updated : row,
+                      ),
+                    );
+                    setEditOpen(false);
+                    setNotice({
+                      type: "success",
+                      text: "Product updated successfully.",
+                    });
+                  } catch {
+                    setNotice({
+                      type: "error",
+                      text: "Failed to update product.",
+                    });
+                  }
+                })
               }
-            })}>Save changes</Button>
+            >
+              Save changes
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

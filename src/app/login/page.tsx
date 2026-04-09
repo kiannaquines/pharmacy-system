@@ -50,9 +50,10 @@ export default function LoginPage() {
         localStorage.setItem("role", token.role);
         localStorage.setItem("permissions", JSON.stringify(token.permissions));
         localStorage.setItem("session_id", token.session_id);
-        // Set a cookie so middleware can verify auth on the server side
+        // Set cookies so server components can use them for authenticated API calls
         const maxAge = token.expires_in ?? 3600;
         document.cookie = `access_token=${token.access_token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        document.cookie = `tenant_slug=${token.tenant_slug}; path=/; max-age=${maxAge}; SameSite=Lax`;
       }
       router.push("/");
     } catch (err: unknown) {

@@ -1,6 +1,8 @@
 import { InventoryModuleClient } from "@/components/inventory-module-client";
 import { PharmacyShell } from "@/components/pharmacy-shell";
-import { fetchBatches, fetchProducts, fetchSuppliers } from "@/lib/api";
+import { fetchBatches, fetchProducts, fetchSuppliers } from "@/lib/server-api";
+
+export const dynamic = "force-dynamic";
 
 export default async function InventoryPage() {
   const [batches, products, suppliers] = await Promise.all([

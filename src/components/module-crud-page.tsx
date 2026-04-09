@@ -172,7 +172,7 @@ export function ModuleCrudPage<T extends { id: number }>({
     <div className="grid gap-5">
       <NoticeAlert notice={notice} />
 
-      <Card className="border border-border bg-card">
+      <Card className="border-0 shadow-none bg-card">
         <CardHeader className="flex flex-row items-center justify-between gap-4">
           <div>
             <CardTitle>{title}</CardTitle>

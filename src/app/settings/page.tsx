@@ -114,7 +114,7 @@ export default function SettingsPage() {
         {/* Settings panels */}
         <div className="space-y-5">
           {/* Organization */}
-          <Card id="org" className="border border-border bg-card">
+          <Card id="org" className="border-0 shadow-none bg-card">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
@@ -149,7 +149,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Locale */}
-          <Card id="locale" className="border border-border bg-card">
+          <Card id="locale" className="border-0 shadow-none bg-card">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-100">
@@ -193,7 +193,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Notifications */}
-          <Card id="notifications" className="border border-border bg-card">
+          <Card id="notifications" className="border-0 shadow-none bg-card">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100">
@@ -227,7 +227,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Security */}
-          <Card id="security" className="border border-border bg-card">
+          <Card id="security" className="border-0 shadow-none bg-card">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100">
@@ -263,7 +263,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Integrations */}
-          <Card id="integrations" className="border border-border bg-card">
+          <Card id="integrations" className="border-0 shadow-none bg-card">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100">

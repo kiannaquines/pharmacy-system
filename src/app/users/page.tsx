@@ -46,7 +46,7 @@ export default function UsersPage() {
       {/* Stats row */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {STATS.map(({ label, value, icon: Icon, bg, color }) => (
-          <Card key={label} className="border border-border bg-card">
+          <Card key={label} className="border-0 shadow-none bg-card">
             <CardContent className="flex items-center gap-4 p-5">
               <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${bg}`}>
                 <Icon className={`h-5 w-5 ${color}`} />
@@ -61,7 +61,7 @@ export default function UsersPage() {
       </div>
 
       {/* Table */}
-      <Card className="border border-border bg-card">
+      <Card className="border-0 shadow-none bg-card">
         <CardHeader className="pb-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -143,7 +143,7 @@ export default function UsersPage() {
       </Card>
 
       {/* Roles guide */}
-      <Card className="border border-border bg-card">
+      <Card className="border-0 shadow-none bg-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Role Permissions</CardTitle>
           <CardDescription>Overview of access levels in the system</CardDescription>

@@ -22,11 +22,11 @@ export function SalesModuleClient({ initialSales, products }: Props) {
       headers={["Sale", "Date", "Customer", "Net Amount", "Actions"]}
       renderRow={(sale: any) => [
         <span key="saleNumber" className="font-medium">
-          {sale.saleNumber}
+          {sale.sale_number}
         </span>,
-        <span key="saleDate">{sale.saleDate}</span>,
-        <span key="customerType">{sale.customerType}</span>,
-        <span key="netAmount">{formatCurrency(sale.netAmount)}</span>,
+        <span key="saleDate">{sale.sale_date}</span>,
+        <span key="customerType">{sale.customer_type}</span>,
+        <span key="netAmount">{formatCurrency(sale.net_amount)}</span>,
       ]}
       initialForm={{
         customer_type: "walk-in",
@@ -48,12 +48,12 @@ export function SalesModuleClient({ initialSales, products }: Props) {
           name: "product_id",
           label: "Product",
           kind: "select",
-          options: products.map((p) => ({ label: p.brandName, value: p.id })),
+          options: products.map((p) => ({ label: p.brand_name, value: p.id })),
         },
         { name: "quantity", label: "Quantity", type: "number" },
       ]}
       toForm={(sale: any) => ({
-        customer_type: sale.customerType,
+        customer_type: sale.customer_type,
         product_id: products[0]?.id ?? 1,
         quantity: 1,
       })}
