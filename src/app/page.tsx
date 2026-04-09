@@ -147,7 +147,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f8f8f6_45%,#f3f3f1_100%)] p-3 text-foreground md:p-6">
       <div className="grid min-h-[calc(100vh-1.5rem)] grid-cols-1 overflow-hidden rounded-[32px] border border-border/70 bg-background shadow-[0_20px_80px_rgba(0,0,0,0.05)] lg:grid-cols-[320px_1fr]">
-        <aside className="border-b border-border/70 bg-[#fbfbfa] px-5 py-6 lg:border-r lg:border-b-0">
+        <aside className="sticky top-3 self-start h-[calc(100vh-1.5rem)] overflow-y-auto border-b border-border/70 bg-[#fbfbfa] px-5 py-6 lg:border-r lg:border-b-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 bg-background">
