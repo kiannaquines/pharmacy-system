@@ -6,8 +6,22 @@ import { AlertCircle, CheckCircle2, Pencil, Plus } from "lucide-react";
 import { PharmacyDataTable } from "@/components/pharmacy-data-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -39,25 +53,49 @@ function NoticeAlert({ notice }: { notice: Notice }) {
   const destructive = notice.type === "error";
   return (
     <Alert variant={destructive ? "destructive" : "default"}>
-      {destructive ? <AlertCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
-      <AlertTitle>{destructive ? "Action failed" : "Action completed"}</AlertTitle>
+      {destructive ? (
+        <AlertCircle className="h-4 w-4" />
+      ) : (
+        <CheckCircle2 className="h-4 w-4" />
+      )}
+      <AlertTitle>
+        {destructive ? "Action failed" : "Action completed"}
+      </AlertTitle>
       <AlertDescription>{notice.text}</AlertDescription>
     </Alert>
   );
 }
 
-function Field({ field, value, onChange }: { field: FieldDef; value: string | number; onChange: (value: string) => void }) {
+function Field({
+  field,
+  value,
+  onChange,
+}: {
+  field: FieldDef;
+  value: string | number;
+  onChange: (value: string) => void;
+}) {
   return (
     <label className="grid gap-2 text-sm">
       <span className="font-medium text-foreground">{field.label}</span>
       {field.kind === "select" ? (
-        <select value={String(value ?? "")} onChange={(e) => onChange(e.target.value)} className="h-11 rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:border-ring">
+        <select
+          value={String(value ?? "")}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-11 rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:border-ring"
+        >
           {field.options.map((option) => (
-            <option key={option.value} value={String(option.value)}>{option.label}</option>
+            <option key={option.value} value={String(option.value)}>
+              {option.label}
+            </option>
           ))}
         </select>
       ) : (
-        <Input type={field.type ?? "text"} value={String(value ?? "")} onChange={(e) => onChange(e.target.value)} />
+        <Input
+          type={field.type ?? "text"}
+          value={String(value ?? "")}
+          onChange={(e) => onChange(e.target.value)}
+        />
       )}
     </label>
   );
@@ -101,18 +139,32 @@ export function ModuleCrudPage<T extends { id: number }>({
   const [pending, startTransition] = useTransition();
   const [notice, setNotice] = useState<Notice>(null);
 
-  function updateFormValue(target: "create" | "edit", name: string, value: string) {
-    const maybeNumber = fields.find((field) => field.name === name)?.kind !== "select" && ["number"].includes((fields.find((field) => field.name === name) as InputField | undefined)?.type ?? "")
-      ? Number(value)
-      : value;
+  function updateFormValue(
+    target: "create" | "edit",
+    name: string,
+    value: string,
+  ) {
+    const maybeNumber =
+      fields.find((field) => field.name === name)?.kind !== "select" &&
+      ["number"].includes(
+        (fields.find((field) => field.name === name) as InputField | undefined)
+          ?.type ?? "",
+      )
+        ? Number(value)
+        : value;
 
-    if (target === "create") setCreateForm((current) => ({ ...current, [name]: maybeNumber }));
+    if (target === "create")
+      setCreateForm((current) => ({ ...current, [name]: maybeNumber }));
     else setEditForm((current) => ({ ...current, [name]: maybeNumber }));
   }
 
   function openEdit(row: T) {
     setEditingRow(row);
-    setEditForm(toForm ? toForm(row) : (row as unknown as Record<string, string | number>));
+    setEditForm(
+      toForm
+        ? toForm(row)
+        : (row as unknown as Record<string, string | number>),
+    );
     setEditOpen(true);
   }
 
@@ -138,21 +190,41 @@ export function ModuleCrudPage<T extends { id: number }>({
               </DialogHeader>
               <div className="grid gap-4">
                 {fields.map((field) => (
-                  <Field key={field.name} field={field} value={createForm[field.name]} onChange={(value) => updateFormValue("create", field.name, value)} />
+                  <Field
+                    key={field.name}
+                    field={field}
+                    value={createForm[field.name]}
+                    onChange={(value) =>
+                      updateFormValue("create", field.name, value)
+                    }
+                  />
                 ))}
               </div>
               <DialogFooter>
-                <Button disabled={pending} onClick={() => startTransition(async () => {
-                  try {
-                    const created = await onCreate(createForm);
-                    setRows((current) => [created, ...current]);
-                    setCreateForm(initialForm);
-                    setCreateOpen(false);
-                    setNotice({ type: "success", text: `${title.slice(0, -1)} added successfully.` });
-                  } catch {
-                    setNotice({ type: "error", text: `Failed to add ${title.slice(0, -1).toLowerCase()}.` });
+                <Button
+                  disabled={pending}
+                  onClick={() =>
+                    startTransition(async () => {
+                      try {
+                        const created = await onCreate(createForm);
+                        setRows((current) => [created, ...current]);
+                        setCreateForm(initialForm);
+                        setCreateOpen(false);
+                        setNotice({
+                          type: "success",
+                          text: `${title.slice(0, -1)} added successfully.`,
+                        });
+                      } catch {
+                        setNotice({
+                          type: "error",
+                          text: `Failed to add ${title.slice(0, -1).toLowerCase()}.`,
+                        });
+                      }
+                    })
                   }
-                })}>Save</Button>
+                >
+                  Save
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -162,7 +234,19 @@ export function ModuleCrudPage<T extends { id: number }>({
             headers={headers}
             data={rows}
             emptyMessage={emptyMessage}
-            renderRow={(row) => [...renderRow(row), <div key="actions" className="flex justify-end gap-2"><Button variant="outline" size="sm" onClick={() => openEdit(row)}><Pencil className="h-4 w-4" />Edit</Button></div>]}
+            renderRow={(row) => [
+              ...renderRow(row),
+              <div key="actions" className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openEdit(row)}
+                >
+                  <Pencil className="h-4 w-4" />
+                  Edit
+                </Button>
+              </div>,
+            ]}
           />
         </CardContent>
       </Card>
@@ -171,25 +255,49 @@ export function ModuleCrudPage<T extends { id: number }>({
         <DialogContent className="rounded-2xl">
           <DialogHeader>
             <DialogTitle>Edit {title.slice(0, -1)}</DialogTitle>
-            <DialogDescription>Update the selected record using a dialog form.</DialogDescription>
+            <DialogDescription>
+              Update the selected record using a dialog form.
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             {fields.map((field) => (
-              <Field key={field.name} field={field} value={editForm[field.name]} onChange={(value) => updateFormValue("edit", field.name, value)} />
+              <Field
+                key={field.name}
+                field={field}
+                value={editForm[field.name]}
+                onChange={(value) => updateFormValue("edit", field.name, value)}
+              />
             ))}
           </div>
           <DialogFooter>
-            <Button disabled={pending || !editingRow} onClick={() => startTransition(async () => {
-              if (!editingRow) return;
-              try {
-                const updated = await onUpdate(editingRow.id, editForm);
-                setRows((current) => current.map((row) => row.id === updated.id ? updated : row));
-                setEditOpen(false);
-                setNotice({ type: "success", text: `${title.slice(0, -1)} updated successfully.` });
-              } catch {
-                setNotice({ type: "error", text: `Failed to update ${title.slice(0, -1).toLowerCase()}.` });
+            <Button
+              disabled={pending || !editingRow}
+              onClick={() =>
+                startTransition(async () => {
+                  if (!editingRow) return;
+                  try {
+                    const updated = await onUpdate(editingRow.id, editForm);
+                    setRows((current) =>
+                      current.map((row) =>
+                        row.id === updated.id ? updated : row,
+                      ),
+                    );
+                    setEditOpen(false);
+                    setNotice({
+                      type: "success",
+                      text: `${title.slice(0, -1)} updated successfully.`,
+                    });
+                  } catch {
+                    setNotice({
+                      type: "error",
+                      text: `Failed to update ${title.slice(0, -1).toLowerCase()}.`,
+                    });
+                  }
+                })
               }
-            })}>Save changes</Button>
+            >
+              Save changes
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
