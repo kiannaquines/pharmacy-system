@@ -160,19 +160,21 @@ export default async function Home() {
             </Button>
           </div>
 
-          <nav className="mt-7 space-y-1">
-            {primaryNav.map((item) => (
-              <button
-                key={item.label}
-                className={cn(
-                  "flex h-12 w-full items-center gap-3 rounded-2xl px-3 text-left text-[15px] transition",
-                  item.active ? "bg-muted text-foreground" : "text-foreground/85 hover:bg-muted/60",
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </button>
-            ))}
+          <nav className="mt-7">
+            <div className="space-y-1">
+              {primaryNav.map((item) => (
+                <button
+                  key={item.label}
+                  className={cn(
+                    "grid h-12 w-full grid-cols-[20px_1fr] items-center gap-x-3 rounded-2xl px-3 text-left text-[15px] transition",
+                    item.active ? "bg-muted text-foreground" : "text-foreground/85 hover:bg-muted/60",
+                  )}
+                >
+                  <item.icon className="h-4 w-4 justify-self-center" />
+                  <span className="truncate">{item.label}</span>
+                </button>
+              ))}
+            </div>
           </nav>
 
           <div className="mt-12">
@@ -181,10 +183,10 @@ export default async function Home() {
               {documentNav.map((item) => (
                 <button
                   key={item.label}
-                  className="flex h-12 w-full items-center gap-3 rounded-2xl px-3 text-left text-[15px] text-foreground/85 transition hover:bg-muted/60"
+                  className="grid h-12 w-full grid-cols-[20px_1fr] items-center gap-x-3 rounded-2xl px-3 text-left text-[15px] text-foreground/85 transition hover:bg-muted/60"
                 >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.label}</span>
+                  <item.icon className="h-4 w-4 justify-self-center" />
+                  <span className="truncate">{item.label}</span>
                 </button>
               ))}
             </div>
