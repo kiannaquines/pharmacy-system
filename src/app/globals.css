@@ -61,6 +61,7 @@ body {
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 35%),
     linear-gradient(180deg, #f8f6f2 0%, #f2efe8 100%);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
 button {
