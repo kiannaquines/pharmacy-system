@@ -1,45 +1,50 @@
-import { PharmacyDataTable, DisabledCrudActions } from "@/components/pharmacy-data-table";
-import { SupplierCreateCard } from "@/components/pharmacy-forms";
+import { ModuleCrudPage } from "@/components/module-crud-page";
 import { PharmacyShell } from "@/components/pharmacy-shell";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchSuppliers } from "@/lib/api";
+import { createSupplier, fetchSuppliers, updateSupplier } from "@/lib/api";
 
 export default async function SuppliersPage() {
   const suppliers = await fetchSuppliers();
 
   return (
     <PharmacyShell title="Suppliers" description="Supplier management now lives on its own page module.">
-      <div className="grid gap-5 xl:grid-cols-[420px_1fr]">
-        <SupplierCreateCard />
-        <Card className="rounded-[28px] border border-border/70 bg-card">
-          <CardHeader>
-            <CardTitle>Supplier list</CardTitle>
-            <CardDescription>Live supplier records from the backend.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <PharmacyDataTable
-              data={suppliers}
-              emptyMessage="No suppliers found."
-              columns={[
-                {
-                  key: "name",
-                  header: "Supplier",
-                  cell: (supplier: any) => (
-                    <div>
-                      <p className="font-semibold">{supplier.name}</p>
-                      <p className="text-sm text-muted-foreground">{supplier.contactPerson}</p>
-                    </div>
-                  ),
-                },
-                { key: "phone", header: "Phone", cell: (supplier: any) => <span>{supplier.phone}</span> },
-                { key: "email", header: "Email", cell: (supplier: any) => <span>{supplier.email}</span> },
-                { key: "status", header: "Status", cell: (supplier: any) => <span>{supplier.status}</span> },
-              ]}
-              actions={() => <DisabledCrudActions />}
-            />
-          </CardContent>
-        </Card>
-      </div>
+      <ModuleCrudPage
+        title="Suppliers"
+        description="Create and edit suppliers using dialog forms."
+        createTitle="Add supplier"
+        createDescription="Use the dialog to add a new supplier."
+        initialData={suppliers}
+        emptyMessage="No suppliers found."
+        headers={["Supplier", "Phone", "Email", "Status", "Actions"]}
+        renderRow={(supplier: any) => [
+          <div key="name"><p className="font-semibold">{supplier.name}</p><p className="text-sm text-muted-foreground">{supplier.contactPerson}</p></div>,
+          <span key="phone">{supplier.phone}</span>,
+          <span key="email">{supplier.email}</span>,
+          <span key="status">{supplier.status}</span>,
+        ]}
+        initialForm={{ name: "", contact_person: "", phone: "", email: "", status: "active" }}
+        fields={[
+          { name: "name", label: "Supplier name" },
+          { name: "contact_person", label: "Contact person" },
+          { name: "phone", label: "Phone" },
+          { name: "email", label: "Email", type: "email" },
+          { name: "status", label: "Status", kind: "select", options: [{ label: "Active", value: "active" }, { label: "Inactive", value: "inactive" }] },
+        ]}
+        toForm={(supplier: any) => ({ name: supplier.name, contact_person: supplier.contactPerson, phone: supplier.phone, email: supplier.email, status: supplier.status })}
+        onCreate={(payload) => createSupplier({
+          name: String(payload.name),
+          contact_person: String(payload.contact_person),
+          phone: String(payload.phone),
+          email: String(payload.email),
+          status: String(payload.status),
+        })}
+        onUpdate={(id, payload) => updateSupplier(id, {
+          name: String(payload.name),
+          contact_person: String(payload.contact_person),
+          phone: String(payload.phone),
+          email: String(payload.email),
+          status: String(payload.status),
+        })}
+      />
     </PharmacyShell>
   );
 }

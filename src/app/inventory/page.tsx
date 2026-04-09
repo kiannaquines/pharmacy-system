@@ -1,45 +1,73 @@
-import { PharmacyDataTable } from "@/components/pharmacy-data-table";
-import { BatchCreateCard } from "@/components/pharmacy-forms";
+import { ModuleCrudPage } from "@/components/module-crud-page";
 import { PharmacyShell } from "@/components/pharmacy-shell";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchBatches, fetchProducts, fetchSuppliers } from "@/lib/api";
+import { createBatch, fetchBatches, fetchProducts, fetchSuppliers, updateBatch } from "@/lib/api";
 import { formatCurrency } from "@/lib/format";
+import type { Product, Supplier } from "@/lib/types";
 
 export default async function InventoryPage() {
   const [batches, products, suppliers] = await Promise.all([fetchBatches(), fetchProducts(), fetchSuppliers()]);
 
   return (
     <PharmacyShell title="Inventory" description="Batch intake and stock visibility as a dedicated page module.">
-      <div className="grid gap-5 xl:grid-cols-[420px_1fr]">
-        <BatchCreateCard suppliers={suppliers} products={products} />
-        <Card className="rounded-[28px] border border-border/70 bg-card">
-          <CardHeader>
-            <CardTitle>Batch ledger</CardTitle>
-            <CardDescription>Stock batches tracked from the live backend service.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <PharmacyDataTable
-              data={batches}
-              emptyMessage="No batches found."
-              columns={[
-                {
-                  key: "product",
-                  header: "Product",
-                  cell: (batch: any) => (
-                    <div>
-                      <p className="font-semibold">{batch.product}</p>
-                      <p className="text-sm text-muted-foreground">{batch.batchNumber}</p>
-                    </div>
-                  ),
-                },
-                { key: "supplier", header: "Supplier", cell: (batch: any) => <span>{batch.supplier}</span> },
-                { key: "cost", header: "Cost", cell: (batch: any) => <span>{formatCurrency(batch.purchaseCost)}</span> },
-                { key: "available", header: "Available", cell: (batch: any) => <span>{batch.quantityAvailable}</span> },
-              ]}
-            />
-          </CardContent>
-        </Card>
-      </div>
+      <ModuleCrudPage
+        title="Batches"
+        description="Create and edit inventory batches using dialog forms."
+        createTitle="Add batch"
+        createDescription="Use the dialog to create a stock batch."
+        initialData={batches}
+        emptyMessage="No batches found."
+        headers={["Product", "Supplier", "Cost", "Available", "Actions"]}
+        renderRow={(batch: any) => [
+          <div key="product"><p className="font-semibold">{batch.product}</p><p className="text-sm text-muted-foreground">{batch.batchNumber}</p></div>,
+          <span key="supplier">{batch.supplier}</span>,
+          <span key="cost">{formatCurrency(batch.purchaseCost)}</span>,
+          <span key="available">{batch.quantityAvailable}</span>,
+        ]}
+        initialForm={{
+          product_id: products[0]?.id ?? 1,
+          supplier_id: suppliers[0]?.id ?? 1,
+          batch_number: "",
+          expiry_date: "",
+          quantity_received: 0,
+          quantity_available: 0,
+          purchase_cost: 0,
+        }}
+        fields={[
+          { name: "product_id", label: "Product", kind: "select", options: products.map((product: Product) => ({ label: product.brandName, value: product.id })) },
+          { name: "supplier_id", label: "Supplier", kind: "select", options: suppliers.map((supplier: Supplier) => ({ label: supplier.name, value: supplier.id })) },
+          { name: "batch_number", label: "Batch number" },
+          { name: "expiry_date", label: "Expiry date", type: "date" },
+          { name: "quantity_received", label: "Quantity received", type: "number" },
+          { name: "quantity_available", label: "Quantity available", type: "number" },
+          { name: "purchase_cost", label: "Purchase cost", type: "number" },
+        ]}
+        toForm={(batch: any) => ({
+          product_id: products[0]?.id ?? 1,
+          supplier_id: suppliers.find((supplier: Supplier) => supplier.name === batch.supplier)?.id ?? suppliers[0]?.id ?? 1,
+          batch_number: batch.batchNumber,
+          expiry_date: batch.expiryDate,
+          quantity_received: batch.quantityReceived,
+          quantity_available: batch.quantityAvailable,
+          purchase_cost: batch.purchaseCost,
+        })}
+        onCreate={(payload) => createBatch({
+          product_id: Number(payload.product_id),
+          supplier_id: Number(payload.supplier_id),
+          batch_number: String(payload.batch_number),
+          expiry_date: String(payload.expiry_date),
+          quantity_received: Number(payload.quantity_received),
+          purchase_cost: Number(payload.purchase_cost),
+        })}
+        onUpdate={(id, payload) => updateBatch(id, {
+          product_id: Number(payload.product_id),
+          supplier_id: Number(payload.supplier_id),
+          batch_number: String(payload.batch_number),
+          expiry_date: String(payload.expiry_date),
+          quantity_received: Number(payload.quantity_received),
+          quantity_available: Number(payload.quantity_available),
+          purchase_cost: Number(payload.purchase_cost),
+        })}
+      />
     </PharmacyShell>
   );
 }

@@ -12,6 +12,8 @@ export type SupplierCreateInput = {
   status: string;
 };
 
+export type SupplierUpdateInput = SupplierCreateInput;
+
 export type ProductCreateInput = {
   category_id: number;
   supplier_id: number;
@@ -24,6 +26,8 @@ export type ProductCreateInput = {
   reorder_level: number;
 };
 
+export type ProductUpdateInput = ProductCreateInput;
+
 export type BatchCreateInput = {
   product_id: number;
   supplier_id: number;
@@ -33,12 +37,20 @@ export type BatchCreateInput = {
   purchase_cost: number;
 };
 
+export type BatchUpdateInput = BatchCreateInput & {
+  quantity_available: number;
+};
+
 export type SaleCreateInput = {
   customer_type: string;
   items: Array<{
     product_id: number;
     quantity: number;
   }>;
+};
+
+export type SaleUpdateInput = {
+  customer_type: string;
 };
 
 export async function fetchDashboardSummary() {
@@ -71,8 +83,18 @@ export async function createSupplier(payload: SupplierCreateInput) {
   return data;
 }
 
+export async function updateSupplier(id: number, payload: SupplierUpdateInput) {
+  const { data } = await api.put(`/suppliers/${id}`, payload);
+  return data;
+}
+
 export async function createProduct(payload: ProductCreateInput) {
   const { data } = await api.post("/products", payload);
+  return data;
+}
+
+export async function updateProduct(id: number, payload: ProductUpdateInput) {
+  const { data } = await api.put(`/products/${id}`, payload);
   return data;
 }
 
@@ -81,7 +103,17 @@ export async function createBatch(payload: BatchCreateInput) {
   return data;
 }
 
+export async function updateBatch(id: number, payload: BatchUpdateInput) {
+  const { data } = await api.put(`/inventory/batches/${id}`, payload);
+  return data;
+}
+
 export async function createSale(payload: SaleCreateInput) {
   const { data } = await api.post("/sales", payload);
+  return data;
+}
+
+export async function updateSale(id: number, payload: SaleUpdateInput) {
+  const { data } = await api.put(`/sales/${id}`, payload);
   return data;
 }
