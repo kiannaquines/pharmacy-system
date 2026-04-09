@@ -3,7 +3,8 @@ import { AlertTriangle, Boxes, ChartColumn, PackageSearch, ShoppingCart, Truck }
 import { SectionCard } from "@/components/section-card";
 import { StatusBadge } from "@/components/status-badge";
 import { SummaryCard } from "@/components/summary-card";
-import { batches, products, sales, summaryCards, suppliers } from "@/lib/mock-data";
+import { fetchBatches, fetchDashboardSummary, fetchProducts, fetchSales, fetchSuppliers } from "@/lib/api";
+import { formatCurrency } from "@/lib/format";
 
 const quickLinks = [
   { label: "Add supplier", icon: Truck },
@@ -14,7 +15,38 @@ const quickLinks = [
   { label: "Expiry alerts", icon: AlertTriangle },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [dashboard, suppliers, products, batches, sales] = await Promise.all([
+    fetchDashboardSummary(),
+    fetchSuppliers(),
+    fetchProducts(),
+    fetchBatches(),
+    fetchSales(),
+  ]);
+
+  const summaryCards = [
+    {
+      label: "Total products",
+      value: String(dashboard.totals.products),
+      helper: "Tracked in the product master",
+    },
+    {
+      label: "Suppliers",
+      value: String(dashboard.totals.suppliers),
+      helper: "Active vendors in the registry",
+    },
+    {
+      label: "Low stock",
+      value: String(dashboard.totals.lowStock),
+      helper: "At or below reorder level",
+    },
+    {
+      label: "Near expiry",
+      value: String(dashboard.totals.nearExpiry),
+      helper: "Needs review soon",
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-8 lg:px-8">
@@ -28,8 +60,8 @@ export default function Home() {
                 Inventory, sales, expiry, and reorder monitoring in one dashboard.
               </h1>
               <p className="mt-3 text-base leading-7 text-slate-300">
-                This starter implementation includes a management dashboard, supplier and product views,
-                batch-level inventory tracking, and daily sales visibility for a pharmacy operation.
+                This implementation now reads live data from the backend and shows supplier, product,
+                stock batch, and sales summaries for a pharmacy operation.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -69,7 +101,7 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product) => (
+                  {products.map((product: any) => (
                     <tr key={product.id} className="border-b border-slate-100 last:border-none">
                       <td className="px-3 py-3">
                         <p className="font-medium text-slate-900">{product.brandName}</p>
@@ -78,7 +110,7 @@ export default function Home() {
                         </p>
                       </td>
                       <td className="px-3 py-3 text-slate-600">{product.category}</td>
-                      <td className="px-3 py-3 text-slate-600">₱{product.sellingPrice.toFixed(2)}</td>
+                      <td className="px-3 py-3 text-slate-600">{formatCurrency(product.sellingPrice)}</td>
                       <td className="px-3 py-3 text-slate-600">{product.stockAvailable}</td>
                       <td className="px-3 py-3 text-slate-600">{product.reorderLevel}</td>
                     </tr>
@@ -93,7 +125,7 @@ export default function Home() {
             description="Approved vendors and active supplier touchpoints for restocking and returns."
           >
             <div className="space-y-4">
-              {suppliers.map((supplier) => (
+              {suppliers.map((supplier: any) => (
                 <div key={supplier.id} className="rounded-2xl border border-slate-200 p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -118,7 +150,7 @@ export default function Home() {
             description="Batch-level stock positions with expiry dates for FEFO handling and return tracing."
           >
             <div className="space-y-4">
-              {batches.map((batch) => (
+              {batches.map((batch: any) => (
                 <div key={batch.batchNumber} className="rounded-2xl border border-slate-200 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
@@ -129,10 +161,10 @@ export default function Home() {
                       Expires {batch.expiryDate}
                     </div>
                   </div>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-3 text-sm text-slate-600">
+                  <div className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
                     <p>Received: {batch.quantityReceived}</p>
                     <p>Available: {batch.quantityAvailable}</p>
-                    <p>Cost: ₱{batch.purchaseCost.toFixed(2)}</p>
+                    <p>Cost: {formatCurrency(batch.purchaseCost)}</p>
                   </div>
                   <p className="mt-3 text-sm text-slate-500">Supplier: {batch.supplier}</p>
                 </div>
@@ -145,7 +177,7 @@ export default function Home() {
             description="Manual sales encoding summary with discount visibility and net sales totals."
           >
             <div className="space-y-4">
-              {sales.map((sale) => (
+              {sales.map((sale: any) => (
                 <div key={sale.saleNumber} className="rounded-2xl border border-slate-200 p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -156,11 +188,11 @@ export default function Home() {
                       {sale.customerType}
                     </div>
                   </div>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-4 text-sm text-slate-600">
+                  <div className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-4">
                     <p>Items: {sale.items}</p>
-                    <p>Gross: ₱{sale.grossAmount.toFixed(2)}</p>
-                    <p>Discount: ₱{sale.discountAmount.toFixed(2)}</p>
-                    <p>Net: ₱{sale.netAmount.toFixed(2)}</p>
+                    <p>Gross: {formatCurrency(sale.grossAmount)}</p>
+                    <p>Discount: {formatCurrency(sale.discountAmount)}</p>
+                    <p>Net: {formatCurrency(sale.netAmount)}</p>
                   </div>
                 </div>
               ))}
