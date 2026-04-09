@@ -1,3 +1,4 @@
+import { PharmacyDataTable } from "@/components/pharmacy-data-table";
 import { SaleCreateCard } from "@/components/pharmacy-forms";
 import { PharmacyShell } from "@/components/pharmacy-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,16 +17,17 @@ export default async function SalesPage() {
             <CardTitle>Sales ledger</CardTitle>
             <CardDescription>Posted sale records from the backend.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {sales.map((sale: any) => (
-              <div key={sale.saleNumber} className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-white px-4 py-4">
-                <div>
-                  <p className="font-semibold">{sale.saleNumber}</p>
-                  <p className="text-sm text-muted-foreground">{sale.customerType} • {sale.saleDate}</p>
-                </div>
-                <span className="rounded-full border border-border px-3 py-1 text-sm">{formatCurrency(sale.netAmount)}</span>
-              </div>
-            ))}
+          <CardContent>
+            <PharmacyDataTable
+              data={sales}
+              emptyMessage="No sales found."
+              columns={[
+                { key: "saleNumber", header: "Sale", cell: (sale: any) => <span className="font-medium">{sale.saleNumber}</span> },
+                { key: "saleDate", header: "Date", cell: (sale: any) => <span>{sale.saleDate}</span> },
+                { key: "customerType", header: "Customer", cell: (sale: any) => <span>{sale.customerType}</span> },
+                { key: "netAmount", header: "Net Amount", cell: (sale: any) => <span>{formatCurrency(sale.netAmount)}</span> },
+              ]}
+            />
           </CardContent>
         </Card>
       </div>

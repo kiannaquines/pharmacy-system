@@ -1,3 +1,4 @@
+import { PharmacyDataTable } from "@/components/pharmacy-data-table";
 import { BatchCreateCard } from "@/components/pharmacy-forms";
 import { PharmacyShell } from "@/components/pharmacy-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,20 +17,26 @@ export default async function InventoryPage() {
             <CardTitle>Batch ledger</CardTitle>
             <CardDescription>Stock batches tracked from the live backend service.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {batches.map((batch: any) => (
-              <div key={batch.batchNumber} className="grid grid-cols-[1.2fr_1fr_auto] items-center gap-4 rounded-2xl border border-border/70 bg-white px-4 py-4">
-                <div>
-                  <p className="font-semibold">{batch.product}</p>
-                  <p className="text-sm text-muted-foreground">{batch.batchNumber}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Supplier: {batch.supplier}</p>
-                  <p className="text-sm">Cost: {formatCurrency(batch.purchaseCost)}</p>
-                </div>
-                <span className="rounded-full border border-border px-3 py-1 text-sm">{batch.quantityAvailable} available</span>
-              </div>
-            ))}
+          <CardContent>
+            <PharmacyDataTable
+              data={batches}
+              emptyMessage="No batches found."
+              columns={[
+                {
+                  key: "product",
+                  header: "Product",
+                  cell: (batch: any) => (
+                    <div>
+                      <p className="font-semibold">{batch.product}</p>
+                      <p className="text-sm text-muted-foreground">{batch.batchNumber}</p>
+                    </div>
+                  ),
+                },
+                { key: "supplier", header: "Supplier", cell: (batch: any) => <span>{batch.supplier}</span> },
+                { key: "cost", header: "Cost", cell: (batch: any) => <span>{formatCurrency(batch.purchaseCost)}</span> },
+                { key: "available", header: "Available", cell: (batch: any) => <span>{batch.quantityAvailable}</span> },
+              ]}
+            />
           </CardContent>
         </Card>
       </div>
