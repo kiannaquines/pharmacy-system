@@ -4,6 +4,97 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api/v1",
 });
 
+// ── Auth types ────────────────────────────────────────────────────────────────
+
+export type LoginInput = {
+  email: string;
+  password: string;
+  tenant_slug: string;
+};
+
+export type TokenResponse = {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  session_id: string;
+  role: string;
+  permissions: string[];
+  tenant_slug: string;
+};
+
+export type RegistrationInput = {
+  tenant_name: string;
+  tenant_slug: string;
+  full_name: string;
+  email: string;
+  password: string;
+  phone?: string;
+};
+
+export type UserSummary = {
+  id: number;
+  full_name: string;
+  email: string;
+  role: string;
+  tenant_id: number;
+  tenant_slug: string;
+  permissions: string[];
+};
+
+export type ForgotPasswordInput = {
+  email: string;
+  tenant_slug: string;
+};
+
+export type PasswordResetResponse = {
+  message: string;
+  reset_token: string;
+  expires_at: string;
+};
+
+export type ResetPasswordInput = {
+  token: string;
+  password: string;
+};
+
+export type MessageResponse = {
+  message: string;
+};
+
+// ── Auth API functions ────────────────────────────────────────────────────────
+
+export async function loginUser(payload: LoginInput): Promise<TokenResponse> {
+  const { data } = await api.post<TokenResponse>("/auth/login", payload);
+  return data;
+}
+
+export async function registerUser(
+  payload: RegistrationInput,
+): Promise<UserSummary> {
+  const { data } = await api.post<UserSummary>("/auth/register", payload);
+  return data;
+}
+
+export async function forgotPassword(
+  payload: ForgotPasswordInput,
+): Promise<PasswordResetResponse> {
+  const { data } = await api.post<PasswordResetResponse>(
+    "/auth/forgot-password",
+    payload,
+  );
+  return data;
+}
+
+export async function resetPassword(
+  payload: ResetPasswordInput,
+): Promise<MessageResponse> {
+  const { data } = await api.post<MessageResponse>(
+    "/auth/reset-password",
+    payload,
+  );
+  return data;
+}
+
 export type SupplierCreateInput = {
   name: string;
   contact_person: string;
