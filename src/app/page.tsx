@@ -55,7 +55,7 @@ function MiniStatCard({
   trend: string;
 }) {
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-card shadow-sm shadow-black/[0.03]">
+    <Card className="rounded-[28px] border border-border/70 bg-card ">
       <CardContent className="p-7">
         <div className="flex items-start justify-between gap-4">
           <p className="text-[15px] text-muted-foreground">{title}</p>
@@ -92,7 +92,7 @@ function AreaLikeChart() {
   return (
     <div className="relative mt-8 h-[420px] overflow-hidden rounded-[24px] border border-border/60 bg-[linear-gradient(180deg,#ffffff_0%,#fcfcfb_100%)] p-6">
       <div className="absolute inset-x-6 top-6 flex justify-end">
-        <div className="inline-flex rounded-2xl border border-border/70 bg-background p-1 text-sm shadow-sm">
+        <div className="inline-flex rounded-2xl border border-border/70 bg-background p-1 text-sm ">
           {["Last 3 months", "Last 30 days", "Last 7 days"].map((tab, index) => (
             <button
               key={tab}
@@ -162,7 +162,7 @@ export default async function Home() {
               <Plus className="h-4 w-4" />
               Add Record
             </Button>
-            <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-border/70 bg-background shadow-sm">
+            <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-border/70 bg-background ">
               <Mail className="h-4 w-4" />
             </Button>
           </div>
@@ -199,7 +199,7 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="mt-12 rounded-[28px] border border-border/70 bg-white p-4 shadow-sm shadow-black/[0.03]">
+          <div className="mt-12 rounded-[28px] border border-border/70 bg-white p-4 ">
             <div className="flex items-center gap-3">
               <Avatar className="h-11 w-11 border border-border/60">
                 <AvatarFallback className="bg-[#e0e7ff] text-sm font-semibold text-[#4338ca]">DP</AvatarFallback>
@@ -254,7 +254,7 @@ export default async function Home() {
             </section>
 
             <section>
-              <Card className="rounded-[32px] border border-border/70 bg-background shadow-sm shadow-black/[0.03]">
+              <Card className="rounded-[32px] border border-border/70 bg-background ">
                 <CardHeader className="pb-0">
                   <CardTitle className="text-[2rem] tracking-tight">Sales and Stock Activity</CardTitle>
                   <CardDescription className="text-lg">Backend-connected operational trend panel</CardDescription>
@@ -266,7 +266,7 @@ export default async function Home() {
             </section>
 
             <section className="grid gap-5 xl:grid-cols-3">
-              <Card className="rounded-[28px] border border-border/70 bg-card shadow-sm shadow-black/[0.03] xl:col-span-2">
+              <Card className="rounded-[28px] border border-border/70 bg-card  xl:col-span-2">
                 <CardHeader>
                   <CardTitle>Product master</CardTitle>
                   <CardDescription>Live product records from the backend service layer</CardDescription>
@@ -290,7 +290,7 @@ export default async function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-[28px] border border-border/70 bg-card shadow-sm shadow-black/[0.03]">
+              <Card className="rounded-[28px] border border-border/70 bg-card ">
                 <CardHeader>
                   <CardTitle>Recent batches</CardTitle>
                   <CardDescription>Inventory intake and expiry visibility</CardDescription>
